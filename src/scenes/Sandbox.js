@@ -16,12 +16,14 @@ class Sandbox extends Phaser.Scene{
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
 
         this.dog = new Dog(this, game.config.width / 2, game.config.height-100, 'dog').setOrigin(0.5, 0);
-    }
+        this.sheep1 = new Sheep(this, game.config.width / 2, game.config.height/3, 'sheep', 50).setOrigin(0.5, 0);
+    } 
 
     update(){
         this.grass.tilePositionY -=2; 
         this.dog.update();
-    }
+        this.sheep1.update(this.dog.x);
 
+    }
     
 }

@@ -3,7 +3,7 @@ class Dog extends Phaser.GameObjects.Sprite{
         super(scene, x, y, texture,frame);
         scene.add.existing(this); //add to scene
 
-        this.moveSpeed = 2; //pixels/frame
+        this.moveSpeed = 3.5; //pixels/frame
     }
 
     update(){
