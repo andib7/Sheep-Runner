@@ -7,13 +7,11 @@ class Sheep extends Phaser.GameObjects.Sprite {
     }
 
     update(dogX) {
-        if(dogX-this.x <= 200){ //sheep will move only after seeing the dog within this distance
-            if (this.x > dogX && this.x <= game.config.width - this.width) {
-                this.x += this.moveSpeed;
-            }
-            else if (this.x < dogX && this.x >= this.width) {
-                this.x -= this.moveSpeed;
-            }
+        if (this.x > dogX && this.x <= game.config.width - this.width && this.x - dogX <= 200) {
+            this.x += this.moveSpeed;
+        }
+        else if (this.x < dogX && this.x >= this.width && dogX - this.x <= 200) {
+            this.x -= this.moveSpeed;
         }
         
     }
