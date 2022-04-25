@@ -1,4 +1,4 @@
-class Obstacle extends Phaser.GameObjects.Sprite {
+class Goal extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, texture, frame) {
         super(scene, x, y, texture, frame);
         scene.add.existing(this); //add to scene
@@ -6,11 +6,11 @@ class Obstacle extends Phaser.GameObjects.Sprite {
     }
 
     update() {
-        if(this.y < game.config.height){
+        if (this.y < game.config.height) {
             this.y += this.moveSpeed;
         }
-        if(this.y>=game.config.height){
-            this.y = -30; 
+        if (this.y >= game.config.height) {
+            this.y = -30;
         }
     }
 }
