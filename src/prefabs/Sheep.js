@@ -8,10 +8,10 @@ class Sheep extends Phaser.GameObjects.Sprite {
     }
 
     update(dogX) {
-        if (this.x > dogX && this.x <= game.config.width - this.width && this.x - dogX <= 200) {
+        if (this.x > dogX && this.x <= game.config.width - this.width*1.6 && this.x - dogX <= 200) {
             this.x += this.moveSpeed;
         }
-        else if (this.x < dogX && this.x >= this.width && dogX - this.x <= 200) {
+        else if (this.x < dogX && this.x >= this.width*1.5 && dogX - this.x <= 200) {
             this.x -= this.moveSpeed;
         }
         

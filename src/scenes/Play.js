@@ -12,28 +12,34 @@ class Sandbox extends Phaser.Scene{
         this.load.image('grass', './assets/background.png');
     }
 
-
-
     create(){
+    
+        //add background
         this.grass = this.add.tileSprite(0,0,640,480, 'grass').setOrigin(0,0);
+
+        //set inputs
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
 
+        //create game objects
         this.dog = new Dog(this, game.config.width / 2, game.config.height-100, 'dog').setOrigin(0.5, 0);
 
         this.sheep1 = new Sheep(this, game.config.width / 2, game.config.height / 3.1, 'sheep', 0, 50).setOrigin(0.5, 0);
         this.sheep2 = new Sheep(this, 50, game.config.height / 2.7, 'sheep', 0, 50).setOrigin(0.5, 0);
         this.sheep3 = new Sheep(this, 580, game.config.height / 2.9, 'sheep', 0, 50).setOrigin(0.5, 0);
         this.sheepList = new Array(this.sheep1, this.sheep2, this.sheep3); 
-        //this.unplacedSheep = new Array(this.sheep2, this.sheep3); 
+        this.unplacedSheep = new Array(); 
         
-        this.obs1 = new Obstacle(this, game.config.width / 3, game.config.height / 3, 'obstacle').setOrigin(0.5, 0);
-        this.obs2 = new Obstacle(this, game.config.width / 1.5, game.config.height / 3, 'obstacle').setOrigin(0.5, 0);
-        this.obs3 = new Obstacle(this, game.config.width / 1.2, game.config.height / 3, 'obstacle').setOrigin(0.5, 0);
+        this.obs1 = new Obstacle(this, game.config.width / 3, game.config.height / 10, 'obstacle').setOrigin(0.5, 0);
+        this.obs2 = new Obstacle(this, game.config.width / 1.5, game.config.height / 10, 'obstacle').setOrigin(0.5, 0);
+        this.obs3 = new Obstacle(this, game.config.width / 1.2, game.config.height / 10, 'obstacle').setOrigin(0.5, 0);
         this.obsList = new Array(this.obs1, this.obs2, this.obs3);
 
         this.goal = new Goal(this, game.config.width /4, -50, 'goal').setOrigin(0.5, 0);
 
+
+
+        //initialized values
         this.collisionCheck = false; 
         this.sheepCount = 0; 
 
@@ -51,10 +57,11 @@ class Sandbox extends Phaser.Scene{
         });
         this.obsList.forEach(element => {
             //console.log(element);
-            element.update();
+            //element.update();
         });
 
         // check collisions
+        //obs to other sprites
         this.obsList.forEach(obsElement => {
             if (this.checkCollision(this.dog, obsElement)) {
                 console.log('Dog hit obstacle');
@@ -66,7 +73,22 @@ class Sandbox extends Phaser.Scene{
                 }
             });
         });
-
+        //sheep to sheep
+        this.sheepList.forEach(sheepElement1 => {
+            this.sheepList.forEach((sheepElement2) => {
+                if (sheepElement1 != sheepElement2 && this.checkCollision(sheepElement1, sheepElement2)) {
+                    console.log('Sheep Hit sheep'); 
+                    if (sheepElement1.x < sheepElement2.x){
+                        sheepElement2.x += sheepElement2.moveSpeed;
+                    }
+                    else {
+                        sheepElement1.x -= sheepElement1.moveSpeed;
+                        sheepElement2.x -= sheepElement2.moveSpeed;
+                    }
+                }
+            });
+        });
+        //sheep to goal
         this.sheepList.forEach((sheepElement) => {
             if (this.checkCollision(sheepElement, this.goal)) {
                 console.log('Sheep Hit goal');
@@ -74,7 +96,6 @@ class Sandbox extends Phaser.Scene{
                 this.score += 30;
             }
         });
-        
         
         //keep track of score
         // display score
@@ -97,6 +118,8 @@ class Sandbox extends Phaser.Scene{
             this.unplacedSheep[0].addSheep();
             //this.unplacedSheep.pop();
         }, null, this);*/
+        //this.timedEvent = this.timedEvent.addEvent({delay: 500, callback: addSheep, callbackScope: this, loop: true});
+        
 
     }
 
@@ -110,6 +133,10 @@ class Sandbox extends Phaser.Scene{
         } else {
             return false;
         }
+    }
+
+    addSheep(){
+        console.log("Hi");
     }
 
 }
