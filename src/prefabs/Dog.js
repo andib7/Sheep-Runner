@@ -6,7 +6,21 @@ class Dog extends Phaser.GameObjects.Sprite{
         this.moveSpeed = 3.5; //pixels/frame
     }
 
+    preload(){
+        this.load.spritesheet('dog', './assets/dogspritesheet.png', { frameWidth: 6, frameHeight: 9, startFrame: 0, endFrame: 3 });
+    }
+
+    create(){
+        //animation config
+        this.anims.create({
+            key: 'dogMove',
+            frames: this.anims.generateFrameNumbers('dog', { start: 0, end: 4, first: 0 }),
+            frameRate: 30
+        });
+    }
+
     update(){
+        this.anims.play('dogMove');
         if(keyLEFT.isDown && this.x >= this.width){
             this.x -= this.moveSpeed; 
         }
@@ -14,6 +28,4 @@ class Dog extends Phaser.GameObjects.Sprite{
             this.x += this.moveSpeed;
         }
     }
-
-
 }

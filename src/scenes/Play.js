@@ -7,9 +7,10 @@ class Sandbox extends Phaser.Scene{
         // load images/tile sprites
         this.load.image('obstacle', './assets/fence.png');
         this.load.image('goal', './assets/pen.png');
-        this.load.image('dog', './assets/dog.png');
+        this.load.image('tempDog', './assets/dog.png');
         this.load.image('sheep', './assets/sheep.png');
         this.load.image('grass', './assets/background.png');
+
     }
 
     create(){
@@ -22,10 +23,10 @@ class Sandbox extends Phaser.Scene{
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
 
         //create game objects
-        this.dog = new Dog(this, game.config.width / 2, game.config.height-100, 'dog').setOrigin(0.5, 0);
+        this.dog = new Dog(this, game.config.width / 2, game.config.height-100).setOrigin(0.5, 0);
 
-        this.sheep1 = new Sheep(this, game.config.width / 2, game.config.height / 3.1, 'sheep', 0, 50).setOrigin(0.5, 0);
-        this.sheep2 = new Sheep(this, -50, game.config.height / 2.7, 'sheep', 0, 50).setOrigin(0.5, 0);
+        this.sheep1 = new Sheep(this, -50, game.config.height / 3.1, 'sheep', 0, 50).setOrigin(0.5, 0);
+        this.sheep2 = new Sheep(this, 50, game.config.height / 2.7, 'sheep', 0, 50).setOrigin(0.5, 0);
         this.sheep3 = new Sheep(this, 580, game.config.height / 2.9, 'sheep', 0, 50).setOrigin(0.5, 0);
         this.sheepList = new Array(this.sheep1, this.sheep2, this.sheep3); 
         
@@ -36,6 +37,8 @@ class Sandbox extends Phaser.Scene{
         this.obsList = new Array(this.obs1, this.obs2, this.obs3);
 
         this.goal = new Goal(this, game.config.width /4, -50, 'goal').setOrigin(0.5, 0);
+
+        
 
         //initialized values
         this.collisionCheck = false; 
@@ -51,14 +54,13 @@ class Sandbox extends Phaser.Scene{
             callbackScope: this, 
             loop: true
         })
-
-    } 
+    }
 
     update(){
-
+        //update movement
         this.grass.tilePositionY -=1.5; 
         this.dog.update();
-        //this.goal.update();
+        this.goal.update();
         this.sheepList.forEach(element => {
             element.update(this.dog.x)
         });
@@ -120,7 +122,6 @@ class Sandbox extends Phaser.Scene{
             fixedWidth: 100
         }
         this.scoreLeft = this.add.text(50, 50, this.score, scoreConfig);
-        
     }
 
     checkCollision(object, obstacle) {
@@ -139,7 +140,7 @@ class Sandbox extends Phaser.Scene{
         if(this.sheepCount < 5){
             this.sheepList.forEach((sheepElement) => {
                 if (sheepElement.inScene == false){
-                    //sheepElement.enterScene();
+                    sheepElement.enterScene();
                     sheepElement.inScene = true; 
                     return;
                 }
