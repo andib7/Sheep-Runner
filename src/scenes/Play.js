@@ -30,10 +30,10 @@ class Play extends Phaser.Scene{
         //create game objects
         this.dog = new Dog(this, game.config.width / 2, game.config.height-100, 'dog').setOrigin(0.5, 0);
 
-        this.sheep1 = new Sheep(this, game.config.width + 50, game.config.height / 1.9, 'sheep', 0, 50).setOrigin(0.5, 0);
+        this.sheep1 = new Sheep(this, game.config.width + 50, game.config.height / 1.9, 'sheep', 0, 30).setOrigin(0.5, 0);
         this.sheep2 = new Sheep(this, -50, game.config.height / 2.7, 'sheep', 0, 50).setOrigin(0.5, 0);
-        this.sheep3 = new Sheep(this, game.config.width + 50, game.config.height / 2.9, 'sheep', 0, 50).setOrigin(0.5, 0);
-        this.sheep4 = new Sheep(this, -50, game.config.height / 1.7, 'sheep', 0, 50).setOrigin(0.5, 0);
+        this.sheep3 = new Sheep(this, game.config.width + 50, game.config.height / 2.9, 'sheep', 0, 70).setOrigin(0.5, 0);
+        this.sheep4 = new Sheep(this, -50, game.config.height / 1.7, 'sheep', 0, 100).setOrigin(0.5, 0);
         this.sheepList = new Array(this.sheep1, this.sheep2, this.sheep3, this.sheep4); 
         
         this.obs1 = new Obstacle(this, game.config.width / 3, -420, 'obstacle').setOrigin(0.5, 0);
@@ -67,7 +67,7 @@ class Play extends Phaser.Scene{
         this.sheep1.inScene = true;
         this.sheepCount = 1; 
         this.nextSheep = this.sheep2;
-        this.livesCount = 1;
+        this.livesCount = 3;
         this.gameOver = false;
 
         this.score = 0;
@@ -90,7 +90,7 @@ class Play extends Phaser.Scene{
         //updates movement when game is running 
         if(!this.gameOver){
             //update movement
-            this.grass.tilePositionY -= 1;
+            this.grass.tilePositionY -= .8;
             this.dog.update();
             this.goal.update();
             this.sheepList.forEach(element => {
@@ -109,6 +109,9 @@ class Play extends Phaser.Scene{
         //obs to other sprites
         this.obsList.forEach(obsElement => {
             if (this.checkCollision(this.dog, obsElement) && this.dog.invincibleStatus == false) {
+                if (!this.gameOver) {
+                    this.sound.play('sfx_dogHit');
+                }
                 this.dog.invincibleStatus = true;
                 this.livesCount-=1; 
                 this.timer = this.time.delayedCall(2000, () => {
@@ -117,6 +120,7 @@ class Play extends Phaser.Scene{
             }
             this.sheepList.forEach((sheepElement) => {
                 if (this.checkCollision(sheepElement, obsElement)) {
+                    this.sound.play('sfx_sheepHit');
                     this.livesCount -= 1; 
                     sheepElement.inScene = false;
                     sheepElement.x = sheepElement.resetX; //resets sheep
@@ -147,9 +151,10 @@ class Play extends Phaser.Scene{
         //sheep to goal
         this.sheepList.forEach((sheepElement) => {
             if (this.checkCollision(sheepElement, this.goal)) {
+                this.sound.play('sfx_collect');
                 sheepElement.inScene = false; 
                 sheepElement.x = sheepElement.resetX; //resets sheep
-                this.score += 30;
+                this.score += sheepElement.points;
             }
         }); 
         
@@ -163,6 +168,11 @@ class Play extends Phaser.Scene{
             this.livesDisplay.setScale(.6);
         }
         else if (this.livesCount <= 0) {
+            this.endSound = this.sound.add('sfx_gameOver');
+            if (!this.endSoundPlaying){
+                this.endSound.play();
+                this.endSoundPlaying = true;
+            }
             this.livesDisplay = this.add.image(game.config.width / 10, game.config.height * .9, '0lives')
             this.livesDisplay.setScale(.6);
             this.gameOver = true;
