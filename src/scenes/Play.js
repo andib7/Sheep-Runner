@@ -26,15 +26,15 @@ class Sandbox extends Phaser.Scene{
         //create game objects
         this.dog = new Dog(this, game.config.width / 2, game.config.height-100, 'dog').setOrigin(0.5, 0);
 
-        this.sheep1 = new Sheep(this, -50, game.config.height / 3.1, 'sheep', 0, 50).setOrigin(0.5, 0);
-        this.sheep2 = new Sheep(this, 50, game.config.height / 2.7, 'sheep', 0, 50).setOrigin(0.5, 0);
-        this.sheep3 = new Sheep(this, 580, game.config.height / 2.9, 'sheep', 0, 50).setOrigin(0.5, 0);
+        this.sheep1 = new Sheep(this, game.config.width / 2, game.config.height / 1.9, 'sheep', 0, 50).setOrigin(0.5, 0);
+        this.sheep2 = new Sheep(this, -50, game.config.height / 2.7, 'sheep', 0, 50).setOrigin(0.5, 0);
+        this.sheep3 = new Sheep(this, game.config.width + 50, game.config.height / 2.9, 'sheep', 0, 50).setOrigin(0.5, 0);
         this.sheepList = new Array(this.sheep1, this.sheep2, this.sheep3); 
         
         
-        this.obs1 = new Obstacle(this, game.config.width / 3, game.config.height / 10, 'obstacle').setOrigin(0.5, 0);
-        this.obs2 = new Obstacle(this, game.config.width / 1.5, game.config.height / 10, 'obstacle').setOrigin(0.5, 0);
-        this.obs3 = new Obstacle(this, game.config.width / 1.2, game.config.height / 10, 'obstacle').setOrigin(0.5, 0);
+        this.obs1 = new Obstacle(this, game.config.width / 3, -350, 'obstacle').setOrigin(0.5, 0);
+        this.obs2 = new Obstacle(this, game.config.width / 1.5, 0, 'obstacle').setOrigin(0.5, 0);
+        this.obs3 = new Obstacle(this, game.config.width / 1.2, -200, 'obstacle').setOrigin(0.5, 0);
         this.obsList = new Array(this.obs1, this.obs2, this.obs3);
 
         this.goal = new Goal(this, game.config.width /4, -50, 'goal').setOrigin(0.5, 0);
@@ -51,8 +51,8 @@ class Sandbox extends Phaser.Scene{
         //initialized values
         this.collisionCheck = false; 
         this.sheep1.inScene = true;
-        this.sheep3.inScene = true;
         this.sheepCount = 1; 
+        this.nextSheep = this.sheep2;
 
         this.score = 0;
 
@@ -66,10 +66,8 @@ class Sandbox extends Phaser.Scene{
 
     update(){
         //update movement
-        this.grass.tilePositionY -=1.5; 
+        this.grass.tilePositionY -=1; 
         this.dog.update();
-        //this.dog.anims.play('moveDog');
-
         this.goal.update();
         this.sheepList.forEach(element => {
             element.update(this.dog.x)
@@ -77,6 +75,11 @@ class Sandbox extends Phaser.Scene{
         this.obsList.forEach(element => {
             element.update();
         });
+
+        //sheep entering scene
+        if(this.nextSheep.entryAllowed == true){
+            this.nextSheep.enterScene();
+        }
 
         // check collisions
         //obs to other sprites
@@ -98,6 +101,10 @@ class Sandbox extends Phaser.Scene{
                 if (sheepElement1 != sheepElement2 && this.checkCollision(sheepElement1, sheepElement2)) {
                     console.log('Sheep Hit sheep'); 
                     if (sheepElement1.x < sheepElement2.x){
+                        if(sheepElement2.x >= game.config.width - sheepElement2.width * .6){
+                            sheepElement1.x -= sheepElement1.moveSpeed;
+                            sheepElement2.moveSpeed = 0;
+                        }
                         sheepElement2.x += sheepElement2.moveSpeed;
                     }
                     else {
@@ -105,6 +112,8 @@ class Sandbox extends Phaser.Scene{
                         sheepElement2.x -= sheepElement2.moveSpeed;
                     }
                 }
+                sheepElement1.moveSpeed = sheepElement1.resetMoveSpeed;
+                sheepElement2.moveSpeed = sheepElement2.resetMoveSpeed;
             });
         });
         //sheep to goal
@@ -148,15 +157,15 @@ class Sandbox extends Phaser.Scene{
 
     addSheep(){
         if(this.sheepCount < 5){
-            this.sheepList.forEach((sheepElement) => {
-                if (sheepElement.inScene == false){
-                    sheepElement.enterScene();
-                    sheepElement.inScene = true; 
+            for(const sheep of this.sheepList){
+                if(sheep.inScene == false){
+                    sheep.entryAllowed = true; 
+                    this.nextSheep = sheep;
                     return;
                 }
-            });
+            }
+            return;
         }
         else{return;}
     }
-
 }
