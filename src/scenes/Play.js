@@ -19,7 +19,6 @@ class Play extends Phaser.Scene{
     }
 
     create(){
-     
         //music
         this.music = this.sound.add('sfx_music');
         this.music.setLoop(true);
@@ -27,11 +26,6 @@ class Play extends Phaser.Scene{
 
         //add background
         this.grass = this.add.tileSprite(0,0,640,480, 'grass').setOrigin(0,0);
-
-        //set inputs
-        keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
-        keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
-        keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
 
         //create game objects
         this.dog = new Dog(this, game.config.width / 2, game.config.height-100, 'dog').setOrigin(0.5, 0);
@@ -52,6 +46,11 @@ class Play extends Phaser.Scene{
         //life counter display
         this.livesDisplay = this.add.image(game.config.width / 10, game.config.height *.9, '3lives')
         this.livesDisplay.setScale(.6);
+
+        //set inputs
+        keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+        keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+        keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
 
         //animation config
         this.anims.create({
@@ -83,8 +82,7 @@ class Play extends Phaser.Scene{
 
     update(){
         // check key input for restart
-        if (this.gameOver) {
-            console.log("ENt");
+        if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
             this.music.stop();
             this.scene.restart();
         }
@@ -105,9 +103,6 @@ class Play extends Phaser.Scene{
             if (this.nextSheep.entryAllowed == true) {
                 this.nextSheep.enterScene();
             }
-        }
-        else{
-            this.scene.pause();
         }
 
         // check collisions
@@ -188,14 +183,14 @@ class Play extends Phaser.Scene{
         }
         this.scoreLeft = this.add.text(50, 50, this.score, scoreConfig);
 
+        
         //when game is over
         if(this.gameOver){
             scoreConfig.fixedWidth = 0;
             this.add.text(game.config.width / 2, game.config.height / 5, 'GAME OVER', scoreConfig).setOrigin(0.5);
             this.add.text(game.config.width / 2, game.config.height / 5 + 30, 'Press R to play again', scoreConfig).setOrigin(0.5);
+            
         }
-
-        
     }
 
     checkCollision(object, obstacle) {

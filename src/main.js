@@ -11,6 +11,7 @@ used many non class examples especially examples on the Phaser 3 page. I learned
 of new techniques that I will definately use in the future. One cool one I was proud of
 was how I implemented the collision with sheep so they move together but have some drag 
 since one is pretty much pushing the other. 
+
 Art: 
 
 */
