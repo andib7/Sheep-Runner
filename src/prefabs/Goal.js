@@ -10,7 +10,8 @@ class Goal extends Phaser.GameObjects.Sprite {
             this.y += this.moveSpeed;
         }
         if (this.y >= game.config.height) {
-            this.y = -30;
+            this.y = -420;
+            this.x = Math.floor(Math.random() * (game.config.width / 10 * 8)) + game.config.width / 10
         }
     }
 }
